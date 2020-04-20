@@ -1,15 +1,14 @@
-#include "config_wifi.h"
-#include "config_mqtt.h"
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
- 
-const char* ssid = "YourNetworkName";
-const char* password =  "YourNetworkPassword";
-const char* mqttServer = "mqtt.YourDomain.com";
-const int mqttPort = 8883;
-const char* mqttUser = "YourMqttUser";
-const char* mqttPassword = "YourMqttUserPassword";
- 
+#include "config.h"
+
+const char *ssid = WIFI_SSID;
+const char *password =  WIFI_PASSWORD;
+const char *mqttServer = MQTT_SERVER;
+const int mqttPort = MQTT_PORT;
+const char *mqttUser = MQTT_USERNAME;
+const char *mqttPassword = MQTT_PASSWORD;
+
 WiFiClient espClient;
 PubSubClient client(espClient);
  
@@ -28,14 +27,17 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
+  Serial.println();
   Serial.println("Connected to the WiFi network");
  
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
  
+  Serial.println("Connecting to MQTT: ");
   while (!client.connected()) {
-    Serial.println("Connecting to MQTT...");
- 
+    
+    Serial.print(".");
+
     if (client.connect("ESP8266Client", mqttUser, mqttPassword )) {
  
       Serial.println("Connected to the MQTT broker");  
