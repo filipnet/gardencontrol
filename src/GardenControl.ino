@@ -11,17 +11,20 @@ const int mqttPort = MQTT_PORT;
 const char *mqttUser = MQTT_USERNAME;
 const char *mqttPassword = MQTT_PASSWORD;
 const char *mqttID = MQTT_ID;
+//const char* mqttRootCA = MQTT_ROOTCA;
 
-WiFiClientSecure espClient;
+WiFiClient espClient;
 PubSubClient client(espClient);
  
 void setup() {
- 
   Serial.begin(115200);
+  Serial.setDebugOutput(false);
+  pinMode(LED_BUILTIN, OUTPUT);
   reconnect();
-  client.publish("esp/test", "Hello from ESP8266");
-  client.subscribe("esp/test");
- 
+  
+  //client.publish("esp/test", "Hello from ESP8266");
+  client.subscribe("home/outdoor/cistern/socket");
+  client.subscribe("home/outdoor/cistern/pump");
 }
 
 void reconnect() {
@@ -58,7 +61,9 @@ void reconnect() {
     Serial.println(mqttUser);
     Serial.print("  MQTT Identifier: ");
     Serial.println(mqttID);
-  
+    //Serial.print("  MQTT RootCA Certificate: ");
+    //Serial.println(mqttRootCA);
+
     while (!client.connected()) {
       if (client.connect(mqttID, mqttUser, mqttPassword)) {
        Serial.println("Connected to MQTT broker");  
@@ -71,8 +76,15 @@ void reconnect() {
   }
 }
 
+void mqttloop()
+{
+  if (!client.loop())
+    client.connect("ESP8266Client");
+}
+
 void callback(char* topic, byte* payload, unsigned int length) {
  
+  /*
   Serial.print("Message arrived in topic: ");
   Serial.println(topic);
  
@@ -80,13 +92,37 @@ void callback(char* topic, byte* payload, unsigned int length) {
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
- 
+  
   Serial.println();
   Serial.println("-----------------------");
- 
+  */
+
+  setCisternStatus(topic, payload, length);
 }
  
 void loop() {
   client.loop();
+  mqttloop();
   reconnect();
+}
+
+void setCisternStatus(char* topic, byte* payload, unsigned int length) {
+
+  String mqttTopic = String(topic);
+  String mqttPayload;
+  for (unsigned int i = 0; i < length; i++) {
+    mqttPayload += (char)payload[i];
+    }
+
+  if (mqttTopic == "home/outdoor/cistern/pump")
+  {
+    if (mqttPayload == "on")
+    {
+      Serial.println("Turn on cistern pump");
+    }
+    else if (mqttPayload == "off")
+    {
+      Serial.println("Turn off cistern pump");
+    }
+  }
 }
