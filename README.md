@@ -6,6 +6,8 @@ Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino mic
 
 - Wemos D1 Mini (should work with other Arduino microcontrollers too)
 - PlatformIO or Arduino IDE (for Arduino IDE you have to move files from /src to root-folder)
+- MQTT Broker such as the Mosquitto MQTT Broker (https://mosquitto.org/)
+- ControllApp such as MQTT Dash (https://play.google.com/store/apps/details?id=net.routix.mqttdash&hl=en)
 
 ## INSTALL AND USAGE
 
