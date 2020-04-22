@@ -1,0 +1,2 @@
+#define RELAY_PUMP D1
+#define RELAY_SOCKET D2

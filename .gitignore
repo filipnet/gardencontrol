@@ -1,5 +1,5 @@
 .pio/
 .vscode/
 backup/
-config.h
-+config.h.sample
+secrets.h
++secrets.h.sample

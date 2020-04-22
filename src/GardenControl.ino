@@ -2,6 +2,7 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266mDNS.h>
 #include <PubSubClient.h>
+#include "secrets.h"
 #include "config.h"
 
 const char *ssid = WIFI_SSID;
@@ -12,6 +13,8 @@ const char *mqttUser = MQTT_USERNAME;
 const char *mqttPassword = MQTT_PASSWORD;
 const char *mqttID = MQTT_ID;
 //const char* mqttRootCA = MQTT_ROOTCA;
+const char relayPump = RELAY_PUMP;
+const char relaySocket = RELAY_SOCKET;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -66,7 +69,8 @@ void reconnect() {
 
     while (!client.connected()) {
       if (client.connect(mqttID, mqttUser, mqttPassword)) {
-       Serial.println("Connected to MQTT broker");  
+       Serial.println("Connected to MQTT broker");
+       Serial.println("");  
        } else {
         Serial.print("Connection to MQTT broker failed with state ");
         Serial.println(client.state());
@@ -108,21 +112,38 @@ void loop() {
 
 void setCisternStatus(char* topic, byte* payload, unsigned int length) {
 
+  // If the pin isn’t connected to anything, digitalRead() can return either HIGH or LOW (and this can change randomly).
+  #define RELAY_ON HIGH
+  #define RELAY_OFF LOW
+
   String mqttTopic = String(topic);
   String mqttPayload;
   for (unsigned int i = 0; i < length; i++) {
     mqttPayload += (char)payload[i];
     }
+  String pinStatus;
 
   if (mqttTopic == "home/outdoor/cistern/pump")
   {
-    if (mqttPayload == "on")
-    {
-      Serial.println("Turn on cistern pump");
-    }
-    else if (mqttPayload == "off")
-    {
-      Serial.println("Turn off cistern pump");
+    if (mqttPayload == "on") {
+      Serial.println("Switch on cistern pump");
+      digitalWrite(relayPump, RELAY_ON);
+      pinStatus = digitalRead(relayPump);
+      Serial.print("Status of GPIO pin ");
+      Serial.print(relayPump);
+      Serial.print(" is ");
+      Serial.println(pinStatus);
+    } else if (mqttPayload == "off") {
+      Serial.println("Switch off cistern pump");
+      digitalWrite(relayPump, RELAY_OFF);
+      pinStatus = digitalRead(relayPump);
+      Serial.print("Status of GPIO pin ");
+      Serial.print(relayPump);
+      Serial.print(" is ");
+      Serial.println(pinStatus);
+    } else {
+      Serial.println("No valid mqtt command");
     }
   }
+  Serial.println("");  
 }
