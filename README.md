@@ -14,7 +14,7 @@ Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino mic
 ### PINOUT
 
 | Sensor-Description | Sensor-PIN | Arduino-PIN |
-| --- | --- | --- | --- | 
+| --- | --- | --- |
 | JSN-SR04T-2.0 Ultrasonic Sensor	| VCC	| 5.0 V	|
 | JSN-SR04T-2.0 Ultrasonic Sensor	| Trigger |	D5 |
 | JSN-SR04T-2.0 Ultrasonic Sensor	| ECHO	| D6 |
