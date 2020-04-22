@@ -26,9 +26,9 @@ Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino mic
 | Button | VCC | 5.0 V |
 | Button | GND | GND |
 | Button | DAT | D4 |
-| Feuchtigkeitssensor | VCC	| 5.0 V	|
-| Feuchtigkeitssensor	| GND	| GND	|
-| Feuchtigkeitssensor	| A0	| A0	|
+| Humidity sensor | VCC	| 5.0 V	|
+| Humidity sensor	| GND	| GND	|
+| Humidity sensor	| A0	| A0	|
 | SRD-05VDC-SL-C Relais	| K1 | Phase L Pump |
 | SRD-05VDC-SL-C Relais	| K2 | Phase L Socket |
 
