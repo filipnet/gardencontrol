@@ -1,5 +1,6 @@
+#include <Arduino.h>
 #include <ESP8266WiFi.h>
-#define MQTT_MAX_PACKET_SIZE 4096
+#define MQTT_MAX_PACKET_SIZE 256
 #include <WiFiClientSecure.h>
 #include <ESP8266mDNS.h>
 #include <PubSubClient.h>
@@ -16,7 +17,7 @@ const char *mqttID = MQTT_ID;
 const int relayPump = RELAY_PUMP;
 const int relaySocket = RELAY_SOCKET;
 
-WiFiClientSecure espClient;
+WiFiClient espClient;
 PubSubClient client(espClient);
  
 void setup() {
@@ -32,7 +33,6 @@ void setup() {
 void reconnect() {
 
   while (!client.connected()) {
-
     WiFi.mode(WIFI_STA);
     delay(100);
     Serial.println();
@@ -46,6 +46,7 @@ void reconnect() {
     }
     Serial.println();
     Serial.println("Connected to WiFi network");
+    // https://pubsubclient.knolleary.net/api.html
     client.setServer(mqttServer, mqttPort);
     client.setCallback(callback);
   
@@ -83,6 +84,7 @@ void mqttloop()
     client.connect("ESP8266Client");
 }
 
+// Pointer to a message callback function called when a message arrives for a subscription created by this client.
 void callback(char* topic, byte* payload, unsigned int length) {
  
   /*
@@ -121,7 +123,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
   {
     if (mqttPayload == "on") {
       Serial.println("Switch on cistern pump");
-      digitalWrite(relayPump, RELAY_ON);
+      digitalWrite(relayPump, HIGH);
       pinStatus = digitalRead(relayPump);
       Serial.print("Status of GPIO pin ");
       Serial.print(relayPump);
@@ -129,7 +131,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
       Serial.println(pinStatus);
     } else if (mqttPayload == "off") {
       Serial.println("Switch off cistern pump");
-      digitalWrite(relayPump, RELAY_OFF);
+      digitalWrite(relayPump, LOW);
       pinStatus = digitalRead(relayPump);
       Serial.print("Status of GPIO pin ");
       Serial.print(relayPump);
