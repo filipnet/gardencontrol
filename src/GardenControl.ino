@@ -3,7 +3,7 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266mDNS.h>
 #include <PubSubClient.h>
-#include "secrets.h"
+#include "credentials.h"
 #include "config.h"
 #include <SerialDebug.h>
 
@@ -17,7 +17,7 @@ const char *mqttID = MQTT_ID;
 const int relayPump = RELAY_PUMP;
 const int relaySocket = RELAY_SOCKET;
 
-WiFiClient espClient;
+WiFiClientSecure espClient;
 PubSubClient client(espClient);
  
 void setup() {

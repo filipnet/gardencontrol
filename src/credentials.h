@@ -1,0 +1,11 @@
+#define WIFI_HOSTNAME "esp8266-gardencontrol"
+#define WIFI_SSID "WonderLANd_IoT"
+#define WIFI_PASSWORD "DerTeufelmitden3goldenenHaaren"
+//#define MQTT_SERVER "mqtt.filipnet.de"
+#define MQTT_SERVER "sbc01.filipnet.de"
+//#define MQTT_SERVER "81.169.235.61"
+//#define MQTT_PORT 8883
+#define MQTT_PORT 1883
+#define MQTT_USERNAME "gardencontrol"
+#define MQTT_PASSWORD "XwQTUgzYcVmdLEx5JvthCGpbM9eyofFa"
+#define MQTT_ID "gardencontrol"
