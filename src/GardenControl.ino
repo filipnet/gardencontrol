@@ -5,7 +5,6 @@
 #include <PubSubClient.h>
 #include "credentials.h"
 #include "config.h"
-#include <SerialDebug.h>
 
 const char *ssid = WIFI_SSID;
 const char *password =  WIFI_PASSWORD;
