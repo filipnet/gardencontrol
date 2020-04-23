@@ -76,16 +76,24 @@ void reconnect() {
        } else {
         Serial.print("Connection to MQTT broker failed with state ");
         Serial.println(client.state());
+        digitalWrite(relayPump, HIGH);
         delay(4000);
        }
     }
   }
 }
 
+// Function to receive MQTT messages
 void mqttloop()
 {
   if (!client.loop())
     client.connect("ESP8266Client");
+}
+
+// Function to send MQTT messages
+void mqttsend(const char *_topic, const char *_data)
+{
+  client.publish(_topic, _data);
 }
 
 // Pointer to a message callback function called when a message arrives for a subscription created by this client.
@@ -101,11 +109,22 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   setCisternStatus(topic, payload, length);
 }
- 
+
+unsigned long heartbeat_previousMillis = 0;
+const long heartbeat_interval = 256000;
+
 void loop() {
   client.loop();
   mqttloop();
   reconnect();
+
+  unsigned long heartbeat_currentMillis = millis();
+  if (heartbeat_currentMillis - heartbeat_previousMillis >= heartbeat_interval) {
+    heartbeat_previousMillis = heartbeat_currentMillis;
+    Serial.println("Send heartbeat signal to MQTT broker");
+    Serial.println("");
+    client.publish("home/cistern/status", "on");
+  }
 }
 
 void setCisternStatus(char* topic, byte* payload, unsigned int length) {
@@ -142,5 +161,31 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
       Serial.println("No valid mqtt command");
     }
   }
+
+  else if (mqttTopic == "home/outdoor/cistern/socket")
+  {
+    if (mqttPayload == "on") {
+      Serial.println("Switch on socket");
+      digitalWrite(relaySocket, LOW);
+      pinStatus = digitalRead(relaySocket);
+      Serial.print("Status of GPIO pin ");
+      Serial.print(relaySocket);
+      Serial.print(" is ");
+      Serial.println(pinStatus);
+      delay(1000);
+    } else if (mqttPayload == "off") {
+      Serial.println("Switch off socket");
+      digitalWrite(relaySocket, HIGH);
+      pinStatus = digitalRead(relaySocket);
+      Serial.print("Status of GPIO pin ");
+      Serial.print(relaySocket);
+      Serial.print(" is ");
+      Serial.println(pinStatus);
+      delay(1000);
+    } else {
+      Serial.println("No valid mqtt command");
+    }
+  }
+
   Serial.println("");  
 }
