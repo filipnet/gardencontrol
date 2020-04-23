@@ -1,5 +1,0 @@
-.pio/
-.vscode/
-backup/
-secrets.h
-+secrets.h.sample
