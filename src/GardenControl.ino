@@ -1,9 +1,11 @@
 #include <ESP8266WiFi.h>
+#define MQTT_MAX_PACKET_SIZE 4096
 #include <WiFiClientSecure.h>
 #include <ESP8266mDNS.h>
 #include <PubSubClient.h>
 #include "secrets.h"
 #include "config.h"
+#include <SerialDebug.h>
 
 const char *ssid = WIFI_SSID;
 const char *password =  WIFI_PASSWORD;
