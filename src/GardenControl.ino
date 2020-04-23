@@ -24,6 +24,10 @@ void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(false);
   pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(relayPump, HIGH);
+  pinMode(relayPump, OUTPUT);
+  digitalWrite(relaySocket, HIGH);
+  pinMode(relaySocket, OUTPUT);
   reconnect();
   
   client.subscribe("home/outdoor/cistern/socket");
@@ -87,15 +91,13 @@ void mqttloop()
 // Pointer to a message callback function called when a message arrives for a subscription created by this client.
 void callback(char* topic, byte* payload, unsigned int length) {
  
-  /*
-  Serial.print("Message arrived in topic: ");
-  Serial.println(topic);
-  Serial.print("Message:");
+  Serial.print("Message topic: ");
+  Serial.print(topic);
+  Serial.print(" | Message Payload: ");
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
-  Serial.println();
-  Serial.println("-----------------------"); */
+  Serial.println("");
 
   setCisternStatus(topic, payload, length);
 }
@@ -109,9 +111,6 @@ void loop() {
 void setCisternStatus(char* topic, byte* payload, unsigned int length) {
 
   // If the pin isn’t connected to anything, digitalRead() can return either HIGH or LOW (and this can change randomly).
-  #define RELAY_ON 1 // equivalent to HIGH
-  #define RELAY_OFF 0 // equivalent to LOW
-
   String mqttTopic = String(topic);
   String mqttPayload;
   for (unsigned int i = 0; i < length; i++) {
@@ -123,20 +122,22 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
   {
     if (mqttPayload == "on") {
       Serial.println("Switch on cistern pump");
-      digitalWrite(relayPump, HIGH);
-      pinStatus = digitalRead(relayPump);
-      Serial.print("Status of GPIO pin ");
-      Serial.print(relayPump);
-      Serial.print(" is ");
-      Serial.println(pinStatus);
-    } else if (mqttPayload == "off") {
-      Serial.println("Switch off cistern pump");
       digitalWrite(relayPump, LOW);
       pinStatus = digitalRead(relayPump);
       Serial.print("Status of GPIO pin ");
       Serial.print(relayPump);
       Serial.print(" is ");
       Serial.println(pinStatus);
+      delay(1000);
+    } else if (mqttPayload == "off") {
+      Serial.println("Switch off cistern pump");
+      digitalWrite(relayPump, HIGH);
+      pinStatus = digitalRead(relayPump);
+      Serial.print("Status of GPIO pin ");
+      Serial.print(relayPump);
+      Serial.print(" is ");
+      Serial.println(pinStatus);
+      delay(1000);
     } else {
       Serial.println("No valid mqtt command");
     }

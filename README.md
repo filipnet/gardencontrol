@@ -32,6 +32,18 @@ Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino mic
 | SRD-05VDC-SL-C Relais	| K1 | Phase L Pump |
 | SRD-05VDC-SL-C Relais	| K2 | Phase L Socket |
 
+### RELAY HIGH AND LOW
+
+To switch the relay it is necessary to define the two GPIOs of the Arduino with pinMode as output.
+By default, the Arduino microcontroller then switches the output to LOW, which means that the connected relay is switched on, i.e. the pump is running. To prevent this, the PIN must be set to HIGH **before** defining it as an output.
+```
+  digitalWrite(relayPump, HIGH);
+  pinMode(relayPump, OUTPUT);
+  digitalWrite(relaySocket, HIGH);
+  pinMode(relaySocket, OUTPUT);
+```
+
+
 ### LIBRARIES ###
 
 - PubSubClient by Nick O'Leary
@@ -43,7 +55,7 @@ Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino mic
 
 - src/GardenControl.ino - The main programm code
 - src/config.h - GPIO configuration
-- src/secrets.h.sample - Sample configuration file for WiFi and MQTT credentials (please rename to secrets.h)
+- src/credentials.h.sample - Sample configuration file for WiFi and MQTT credentials (please rename to secrets.h)
 - README.md - The manual for this Arduino Script
 - LICENSE - The license notes for this Arduino script
 - platformio.ini - Wemos D1 Mini Configuration for PlatformIO
