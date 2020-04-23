@@ -11,6 +11,27 @@ Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino mic
 
 ## INSTALL AND USAGE
 
+### PINOUT
+
+| Sensor-Description | Sensor-PIN | Arduino-PIN |
+| --- | --- | --- |
+| JSN-SR04T-2.0 Ultrasonic Sensor	| VCC	| 5.0 V	|
+| JSN-SR04T-2.0 Ultrasonic Sensor	| Trigger |	D5 |
+| JSN-SR04T-2.0 Ultrasonic Sensor	| ECHO	| D6 |
+| JSN-SR04T-2.0 Ultrasonic Sensor	| GND | - |
+| SRD-05VDC-SL-C Relais	| GND | - |
+| SRD-05VDC-SL-C Relais	| IN1	| D1 |
+| SRD-05VDC-SL-C Relais	| IN2	| D2 |
+| SRD-05VDC-SL-C Relais	| VCC	| 5.0 V |	
+| Button | VCC | 5.0 V |
+| Button | GND | GND |
+| Button | DAT | D4 |
+| Humidity sensor | VCC	| 5.0 V	|
+| Humidity sensor	| GND	| GND	|
+| Humidity sensor	| A0	| A0	|
+| SRD-05VDC-SL-C Relais	| K1 | Phase L Pump |
+| SRD-05VDC-SL-C Relais	| K2 | Phase L Socket |
+
 ### LIBRARIES ###
 
 - PubSubClient by Nick O'Leary
