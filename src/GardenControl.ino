@@ -17,7 +17,7 @@ const char *mqttID = MQTT_ID;
 const int relayPump = RELAY_PUMP;
 const int relaySocket = RELAY_SOCKET;
 
-WiFiClient espClient;
+WiFiClientSecure espClient;
 PubSubClient client(espClient);
  
 void setup() {
@@ -74,8 +74,13 @@ void reconnect() {
        Serial.println("");
        digitalWrite(LED_BUILTIN, HIGH); 
        } else {
-        Serial.print("Connection to MQTT broker failed with state ");
+        Serial.print("Connection to MQTT broker failed with state: ");
         Serial.println(client.state());
+        char puffer[100];
+        espClient.getLastSSLError(puffer,sizeof(puffer));
+        Serial.print("TLS connection failed with state: ");
+        Serial.println(puffer);
+        Serial.println("");
         digitalWrite(relayPump, HIGH);
         delay(4000);
        }
