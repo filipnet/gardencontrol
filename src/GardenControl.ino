@@ -118,7 +118,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 unsigned long heartbeat_previousMillis = 0;
-const long heartbeat_interval = 256000;
+const long heartbeat_interval = 512000;
 
 void loop() {
   client.loop();
@@ -130,7 +130,7 @@ void loop() {
     heartbeat_previousMillis = heartbeat_currentMillis;
     Serial.println("Send heartbeat signal to MQTT broker");
     Serial.println("");
-    client.publish("home/cistern/status", "on");
+    client.publish("home/cistern/heartbeat", "on");
   }
 }
 
