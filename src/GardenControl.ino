@@ -28,6 +28,7 @@ void setup() {
   pinMode(relayPump, OUTPUT);
   digitalWrite(relaySocket, HIGH);
   pinMode(relaySocket, OUTPUT);
+  espClient.setInsecure();
   reconnect();
   
   client.subscribe("home/outdoor/cistern/socket");
@@ -67,6 +68,7 @@ void reconnect() {
     Serial.println(mqttUser);
     Serial.print("  MQTT Identifier: ");
     Serial.println(mqttID);
+    Serial.println("");
 
     while (!client.connected()) {
       if (client.connect(mqttID, mqttUser, mqttPassword)) {
