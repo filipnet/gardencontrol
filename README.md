@@ -49,6 +49,12 @@ By default, the Arduino microcontroller then switches the output to LOW, which m
 ```
 ## FEATURES
 
+- Connects to the Wireless Access Pointt / Wifi Router
+- Securely connects to the MQTT Broker (TLS)
+- Subscribes to the desired MQTT topics
+- Handles incoming MQTT messages
+- Controls ESP8266 Chip Level Data Pins
+
 ## DIRECTORIES AND FILES
 
 - src/GardenControl.ino - The main programm code
