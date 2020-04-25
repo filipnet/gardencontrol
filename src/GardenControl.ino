@@ -124,7 +124,10 @@ void loop() {
   client.loop();
   mqttloop();
   reconnect();
+  heartbeat();
+}
 
+void heartbeat() {
   unsigned long heartbeat_currentMillis = millis();
   if (heartbeat_currentMillis - heartbeat_previousMillis >= heartbeat_interval) {
     heartbeat_previousMillis = heartbeat_currentMillis;
@@ -133,6 +136,7 @@ void loop() {
     client.publish("home/cistern/heartbeat", "on");
   }
 }
+
 
 void setCisternStatus(char* topic, byte* payload, unsigned int length) {
 
