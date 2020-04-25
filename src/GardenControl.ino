@@ -17,6 +17,9 @@ const char *mqttID = MQTT_ID;
 const int relayPump = RELAY_PUMP;
 const int relaySocket = RELAY_SOCKET;
 
+unsigned long heartbeat_previousMillis = 0;
+const long heartbeat_interval = HEARTBEAT_INTERVALL;
+
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
  
@@ -117,8 +120,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   setCisternStatus(topic, payload, length);
 }
 
-unsigned long heartbeat_previousMillis = 0;
-const long heartbeat_interval = 512000;
+
 
 void loop() {
   client.loop();
