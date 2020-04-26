@@ -20,6 +20,10 @@ const int relaySocket = RELAY_SOCKET;
 unsigned long heartbeat_previousMillis = 0;
 const long heartbeat_interval = HEARTBEAT_INTERVALL;
 
+unsigned long emergencystop_previousMillis = 0;
+const long emergencystop_threshold = EMERGENCYSTOP_THRESHOLD;
+bool emergencystop_running = false;
+
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
  
@@ -57,9 +61,6 @@ void reconnect() {
     // https://pubsubclient.knolleary.net/api.html
     client.setServer(mqttServer, mqttPort);
     client.setCallback(callback);
-  
-    //IPAddress mqttServerIP = MDNS.queryHost(mqttServer);
-
     Serial.println("Connecting to MQTT broker");
     Serial.print("  MQTT Server: ");
     Serial.println(mqttServer);
@@ -108,7 +109,6 @@ void mqttsend(const char *_topic, const char *_data)
 
 // Pointer to a message callback function called when a message arrives for a subscription created by this client.
 void callback(char* topic, byte* payload, unsigned int length) {
- 
   Serial.print("Message topic: ");
   Serial.print(topic);
   Serial.print(" | Message Payload: ");
@@ -116,17 +116,37 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.print((char)payload[i]);
   }
   Serial.println("");
-
   setCisternStatus(topic, payload, length);
 }
-
-
 
 void loop() {
   client.loop();
   mqttloop();
   reconnect();
   heartbeat();
+  emergencystop();
+}
+
+void emergencystop() {
+  String pinStatus;
+  if (emergencystop_running = true) {
+    unsigned long emergencystop_currentMillis = millis();
+    if (emergencystop_currentMillis - emergencystop_previousMillis >= emergencystop_threshold) {
+      emergencystop_previousMillis = emergencystop_currentMillis;
+      Serial.println("Emergency STOP cistern pump");
+      digitalWrite(relayPump, HIGH);
+      pinStatus = digitalRead(relayPump);
+      Serial.print("Status of GPIO pin ");
+      Serial.print(relayPump);
+      Serial.print(" is ");
+      Serial.println(pinStatus);
+      delay(1000);
+      Serial.println("Send Emergency STOP signal to MQTT broker");
+      Serial.println("");
+      client.publish("home/cistern/emergencystop", "on");
+      emergencystop_running = false;
+    }
+  }
 }
 
 void heartbeat() {
@@ -138,7 +158,6 @@ void heartbeat() {
     client.publish("home/cistern/heartbeat", "on");
   }
 }
-
 
 void setCisternStatus(char* topic, byte* payload, unsigned int length) {
 
@@ -161,6 +180,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
       Serial.print(" is ");
       Serial.println(pinStatus);
       delay(1000);
+      emergencystop_running = true;
     } else if (mqttPayload == "off") {
       Serial.println("Switch off cistern pump");
       digitalWrite(relayPump, HIGH);
@@ -170,6 +190,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
       Serial.print(" is ");
       Serial.println(pinStatus);
       delay(1000);
+      emergencystop_running = false;
     } else {
       Serial.println("No valid mqtt command");
     }
@@ -199,6 +220,5 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
       Serial.println("No valid mqtt command");
     }
   }
-
   Serial.println("");  
 }
