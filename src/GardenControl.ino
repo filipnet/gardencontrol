@@ -124,15 +124,27 @@ void loop() {
   mqttloop();
   reconnect();
   heartbeat();
+  switchontime();
   emergencystop();
+}
+
+bool emergencystop_running_prev = false;
+unsigned long emergencystop_switchon = 0;
+
+void switchontime() {
+  if (!emergencystop_running_prev && emergencystop_running) {
+    emergencystop_switchon = millis();
+    emergencystop_running_prev = emergencystop_running;
+  }
 }
 
 void emergencystop() {
   String pinStatus;
   if (emergencystop_running) {
     unsigned long emergencystop_currentMillis = millis();
-    if (emergencystop_currentMillis - emergencystop_previousMillis >= emergencystop_threshold) {
-      emergencystop_previousMillis = emergencystop_currentMillis;
+    //Serial.print("Time delta: ");
+    //Serial.println((emergencystop_currentMillis-emergencystop_switchon)/1000);
+    if (emergencystop_currentMillis - emergencystop_switchon >= emergencystop_threshold) {
       Serial.println("Emergency STOP cistern pump");
       digitalWrite(relayPump, HIGH);
       pinStatus = digitalRead(relayPump);
@@ -143,8 +155,10 @@ void emergencystop() {
       delay(1000);
       Serial.println("Send Emergency STOP signal to MQTT broker");
       Serial.println("");
-      client.publish("home/cistern/emergencystop", "on");
+      client.publish("home/outdoor/cistern/emergencystop", "on");
+      client.publish("home/outdoor/cistern/pump", "off");
       emergencystop_running = false;
+      emergencystop_running_prev = false;
     }
   }
 }
@@ -160,8 +174,6 @@ void heartbeat() {
 }
 
 void setCisternStatus(char* topic, byte* payload, unsigned int length) {
-
-  // If the pin isn’t connected to anything, digitalRead() can return either HIGH or LOW (and this can change randomly).
   String mqttTopic = String(topic);
   String mqttPayload;
   for (unsigned int i = 0; i < length; i++) {
@@ -181,6 +193,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
       Serial.println(pinStatus);
       delay(1000);
       emergencystop_running = true;
+      emergencystop_running_prev = false;
     } else if (mqttPayload == "off") {
       Serial.println("Switch off cistern pump");
       digitalWrite(relayPump, HIGH);
@@ -191,6 +204,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
       Serial.println(pinStatus);
       delay(1000);
       emergencystop_running = false;
+      emergencystop_running_prev = false;
     } else {
       Serial.println("No valid mqtt command");
     }
