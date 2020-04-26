@@ -138,12 +138,19 @@ void switchontime() {
   }
 }
 
+unsigned long timeDeltaOld = 0;
 void emergencystop() {
   String pinStatus;
   if (emergencystop_running) {
     unsigned long emergencystop_currentMillis = millis();
-    //Serial.print("Time delta: ");
-    //Serial.println((emergencystop_currentMillis-emergencystop_switchon)/1000);
+    
+    unsigned long timeDelta = (emergencystop_currentMillis-emergencystop_switchon)/1000;
+    if (timeDeltaOld != timeDelta) {
+      Serial.print(timeDelta);
+      Serial.print("..");
+      timeDeltaOld = timeDelta;
+    }
+    
     if (emergencystop_currentMillis - emergencystop_switchon >= emergencystop_threshold) {
       Serial.println("Emergency STOP cistern pump");
       digitalWrite(relayPump, HIGH);
