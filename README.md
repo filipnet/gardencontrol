@@ -30,8 +30,8 @@ Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino mic
 | SRD-05VDC-SL-C Relais	| IN1	| D1 |
 | SRD-05VDC-SL-C Relais	| IN2	| D2 |
 | SRD-05VDC-SL-C Relais	| VCC	| 5.0 V |	
-| SRD-05VDC-SL-C Relais	| K1 | Phase L Pump |
-| SRD-05VDC-SL-C Relais	| K2 | Phase L Socket |
+| SRD-05VDC-SL-C Relais	| NO2 + COM2 | Phase L Pump |
+| SRD-05VDC-SL-C Relais	| NO1 + COM1 | Phase L Socket |
 
 #### INTEGRATION OF A SWITCH
 
