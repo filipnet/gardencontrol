@@ -2,6 +2,8 @@
 
 Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino microcontroller via MQTT
 
+<img src="/images/mqttdash.jpg" alt="Screenshot of MQTTDash Control Panel" width="200"/>
+
 ## FEATURES
 
 - Connects to the Wireless Access Pointt / Wifi Router
@@ -30,8 +32,11 @@ Automatic irrigation with a cistern pump controlled by Wemos D1 Mini Arduino mic
 | SRD-05VDC-SL-C Relais	| IN1	| D1 |
 | SRD-05VDC-SL-C Relais	| IN2	| D2 |
 | SRD-05VDC-SL-C Relais	| VCC	| 5.0 V |	
-| SRD-05VDC-SL-C Relais	| NO2 + COM2 | Phase L Pump |
-| SRD-05VDC-SL-C Relais	| NO1 + COM1 | Phase L Socket |
+| SRD-05VDC-SL-C Relais	| NO1 + COM1 | Phase L (230V) Pump |
+| SRD-05VDC-SL-C Relais	| NO2 + COM2 | Phase L (230V) Socket |
+
+For safety reasons I have fitted the 230V relay in a separate plastic box (for screws) with self-adhesive velcro tape. 
+<img src="/images/relay_in_box.jpg" alt="Relay in a box" width="200"/>
 
 #### INTEGRATION OF A SWITCH
 
