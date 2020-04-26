@@ -74,12 +74,12 @@ If the cistern pump can now be switched on and off via the MQTT Broker from anyw
 ### PLUGIN REQUIREMENTS
 
 - node-red-contrib-schedex
-- node-red-contrib-telegrambot
+- node-red-contrib-telegrambot (optional if you would like to get status messages)
 
 ### NODE-RED FLOW
 
 Node-RED works with so-called flows, which can be imported and exported. 
-An example of a flow can be found in flows.json in the github repository.
+An example of a flow can be found in **flows.json** in the github repository.
 
 ### MQTT TOPICS
 

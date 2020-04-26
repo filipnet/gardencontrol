@@ -8,8 +8,8 @@
         "qos": "2",
         "retain": "false",
         "broker": "89c47141.2fd35",
-        "x": 1180,
-        "y": 240,
+        "x": 1209,
+        "y": 340,
         "wires": []
     },
     {
@@ -35,8 +35,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 530,
-        "y": 500,
+        "x": 520,
+        "y": 465,
         "wires": [
             [
                 "5f8d08de.25cd48"
@@ -51,8 +51,8 @@
         "func": "if (msg.payload === \"on\" && msg.topic === \"home/outdoor/cistern/automatic\") {\n    msg.topic = \"[INFO] Automatische Bewässerung gestartet\";\n    msg.payload = \"Die automatische Bewässerung wurde gestartet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"home/outdoor/cistern/automatic\"){\n msg.topic = \"[INFO] Automatische Bewässerung beendet\";\n    msg.payload = \"Die automatische Bewässerung wurde beendet.\";\n}\nelse if (msg.payload === \"on\" && msg.topic === \"home/outdoor/cistern/pump/trigger\") {\n    msg.topic = \"[INFO] Manuelle Bewässerung gestartet\";\n    msg.payload = \"Die manuelle Bewässerung wurde gestartet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"home/outdoor/cistern/pump/trigger\"){\n msg.topic = \"[INFO] Manuelle Bewässerung beendet\";\n    msg.payload = \"Die manuelle Bewässerung wurde beendet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"timeout\"){\n msg.topic = \"[INFO] Manuelle Bewässerung wurde nach Timeout beendet\";\n    msg.payload = \"Die manuelle Bewässerung wurde nach Timeout beendet.\";\n}\nelse {\n msg.topic = \"\";\n    msg.payload = \"\";\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1170,
-        "y": 340,
+        "x": 1179,
+        "y": 240,
         "wires": [
             [
                 "e1fb0741.132488"
@@ -81,8 +81,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 530,
-        "y": 560,
+        "x": 520,
+        "y": 525,
         "wires": [
             [
                 "19d03e7d.118292"
@@ -94,16 +94,17 @@
         "type": "schedex",
         "z": "93677e9e.8e6ed8",
         "name": "",
+        "passthroughunhandled": false,
         "suspended": false,
         "lat": "49.9014",
         "lon": "8.2986",
         "ontime": "06:00",
-        "ontopic": "home/outdoor/cistern/automatic/morning",
+        "ontopic": "home/outdoor/cistern/automatic",
         "onpayload": "on",
         "onoffset": 0,
         "onrandomoffset": false,
         "offtime": "06:05",
-        "offtopic": "home/outdoor/cistern/automatic/morning",
+        "offtopic": "home/outdoor/cistern/automatic",
         "offpayload": "off",
         "offoffset": 0,
         "offrandomoffset": 0,
@@ -114,11 +115,11 @@
         "fri": true,
         "sat": true,
         "sun": true,
-        "x": 768,
-        "y": 500,
+        "x": 747,
+        "y": 465,
         "wires": [
             [
-                "8ceb7159.cab1f8"
+                "25c8209c.0b938"
             ]
         ]
     },
@@ -127,16 +128,17 @@
         "type": "schedex",
         "z": "93677e9e.8e6ed8",
         "name": "",
+        "passthroughunhandled": false,
         "suspended": false,
         "lat": "49.9014",
         "lon": "8.2986",
         "ontime": "21:00",
-        "ontopic": "home/outdoor/cistern/automatic/evening",
+        "ontopic": "home/outdoor/cistern/automatic",
         "onpayload": "on",
         "onoffset": 0,
         "onrandomoffset": false,
         "offtime": "21:05",
-        "offtopic": "home/outdoor/cistern/automatic/evening",
+        "offtopic": "home/outdoor/cistern/automatic",
         "offpayload": "off",
         "offoffset": 0,
         "offrandomoffset": 0,
@@ -147,11 +149,11 @@
         "fri": true,
         "sat": true,
         "sun": true,
-        "x": 768,
-        "y": 560,
+        "x": 747,
+        "y": 525,
         "wires": [
             [
-                "8ceb7159.cab1f8"
+                "25c8209c.0b938"
             ]
         ]
     },
@@ -159,19 +161,15 @@
         "id": "8ceb7159.cab1f8",
         "type": "stoptimer",
         "z": "93677e9e.8e6ed8",
-        "duration": "500",
+        "duration": "5",
         "units": "Second",
         "payloadtype": "str",
         "payloadval": "off",
         "name": "max. 500 sec. off",
-        "x": 710,
-        "y": 260,
+        "x": 499,
+        "y": 240,
         "wires": [
-            [
-                "7d4c011c.09fa5",
-                "a45b858f.6b4be8",
-                "2129ab38.d49aac"
-            ],
+            [],
             [
                 "7c4211d8.0450e"
             ]
@@ -183,8 +181,8 @@
         "z": "93677e9e.8e6ed8",
         "name": "automatic module",
         "info": "",
-        "x": 490,
-        "y": 460,
+        "x": 130,
+        "y": 425,
         "wires": []
     },
     {
@@ -195,12 +193,11 @@
         "func": "cistern_pump_state = global.get(\"gv_cistern_pump_state\");\n\nif (msg.payload === \"off\" && cistern_pump_state == \"on\"){\n    msg.topic = \"timeout\"\n    msg.payload = \"off\";\n    return msg;\n    }",
         "outputs": 1,
         "noerr": 0,
-        "x": 930,
-        "y": 340,
+        "x": 719,
+        "y": 240,
         "wires": [
             [
-                "7d4c011c.09fa5",
-                "2129ab38.d49aac"
+                "25c8209c.0b938"
             ]
         ]
     },
@@ -214,7 +211,7 @@
         "datatype": "auto",
         "broker": "89c47141.2fd35",
         "x": 200,
-        "y": 500,
+        "y": 465,
         "wires": [
             [
                 "9cf8876a.0044f8"
@@ -229,8 +226,8 @@
         "func": "msg.payload = {\n    chatId : '-396221247', \n    type : 'message', \n    content : msg.payload,\n    options : {\n        disable_notification: true\n    }\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1390,
-        "y": 340,
+        "x": 1399,
+        "y": 240,
         "wires": [
             [
                 "60e8b326.38ae9c",
@@ -257,8 +254,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1210,
-        "y": 200,
+        "x": 1239,
+        "y": 400,
         "wires": [
             []
         ]
@@ -273,10 +270,11 @@
         "datatype": "auto",
         "broker": "89c47141.2fd35",
         "x": 220,
-        "y": 320,
+        "y": 340,
         "wires": [
             [
-                "8ceb7159.cab1f8"
+                "8ceb7159.cab1f8",
+                "25c8209c.0b938"
             ]
         ]
     },
@@ -290,7 +288,7 @@
         "datatype": "auto",
         "broker": "89c47141.2fd35",
         "x": 210,
-        "y": 560,
+        "y": 525,
         "wires": [
             [
                 "95ef85c1.616238"
@@ -302,15 +300,48 @@
         "type": "debug",
         "z": "93677e9e.8e6ed8",
         "name": "Replace with your Telegram or E-Mail node",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
         "complete": "payload",
         "targetType": "msg",
-        "x": 1710,
-        "y": 340,
+        "x": 1719,
+        "y": 240,
         "wires": []
+    },
+    {
+        "id": "8d77db9b.3c2778",
+        "type": "debug",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 1159,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "25c8209c.0b938",
+        "type": "function",
+        "z": "93677e9e.8e6ed8",
+        "name": "Consolidate",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 952,
+        "y": 340,
+        "wires": [
+            [
+                "8d77db9b.3c2778",
+                "a45b858f.6b4be8",
+                "7d4c011c.09fa5",
+                "2129ab38.d49aac"
+            ]
+        ]
     },
     {
         "id": "89c47141.2fd35",
