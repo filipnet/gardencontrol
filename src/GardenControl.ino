@@ -112,7 +112,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message topic: ");
   Serial.print(topic);
   Serial.print(" | Message Payload: ");
-  for (int i = 0; i < length; i++) {
+  for (unsigned int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
   Serial.println("");
@@ -129,7 +129,7 @@ void loop() {
 
 void emergencystop() {
   String pinStatus;
-  if (emergencystop_running = true) {
+  if (emergencystop_running) {
     unsigned long emergencystop_currentMillis = millis();
     if (emergencystop_currentMillis - emergencystop_previousMillis >= emergencystop_threshold) {
       emergencystop_previousMillis = emergencystop_currentMillis;
