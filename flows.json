@@ -1,0 +1,393 @@
+[
+    {
+        "id": "2129ab38.d49aac",
+        "type": "mqtt out",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "topic": "home/outdoor/cistern/pump",
+        "qos": "2",
+        "retain": "false",
+        "broker": "89c47141.2fd35",
+        "x": 1209,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7d4c011c.09fa5",
+        "type": "function",
+        "z": "93677e9e.8e6ed8",
+        "name": "Create messages",
+        "func": "if (msg.payload === \"on\" && msg.topic === \"home/outdoor/cistern/automatic\") {\n    msg.topic = \"[INFO] Automatische Bewässerung gestartet\";\n    msg.payload = \"Die automatische Bewässerung wurde gestartet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"home/outdoor/cistern/automatic\"){\n    msg.topic = \"[INFO] Automatische Bewässerung beendet\";\n    msg.payload = \"Die automatische Bewässerung wurde beendet.\";\n}\nelse if (msg.payload === \"on\" && msg.topic === \"home/outdoor/cistern/pump/trigger\") {\n    msg.topic = \"[INFO] Manuelle Bewässerung gestartet\";\n    msg.payload = \"Die manuelle Bewässerung wurde gestartet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"home/outdoor/cistern/pump\"){\n    msg.topic = \"[INFO] Manuelle Bewässerung beendet\";\n    msg.payload = \"Die manuelle Bewässerung wurde beendet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"timeout\"){\n    msg.topic = \"[INFO] Manuelle Bewässerung wurde nach Timeout beendet\";\n    msg.payload = \"Die manuelle Bewässerung wurde nach Timeout beendet.\";\n}\nelse if (msg.payload === \"on\" && msg.topic === \"home/outdoor/cistern/emergencystop\"){\n    msg.topic = \"[ALERT] Emergency STOP wurde initiiert\";\n    msg.payload = \"Emergency STOP wurde von Arduino initiiert\";\n}\nelse {\n msg.topic = \"\";\n    msg.payload = \"\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1179,
+        "y": 240,
+        "wires": [
+            [
+                "e1fb0741.132488"
+            ]
+        ]
+    },
+    {
+        "id": "5f8d08de.25cd48",
+        "type": "schedex",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "passthroughunhandled": false,
+        "suspended": false,
+        "lat": "49.9014",
+        "lon": "8.2986",
+        "ontime": "06:00",
+        "ontopic": "home/outdoor/cistern/automatic",
+        "onpayload": "on",
+        "onoffset": 0,
+        "onrandomoffset": false,
+        "offtime": "06:05",
+        "offtopic": "home/outdoor/cistern/automatic",
+        "offpayload": "off",
+        "offoffset": 0,
+        "offrandomoffset": 0,
+        "mon": true,
+        "tue": true,
+        "wed": true,
+        "thu": true,
+        "fri": true,
+        "sat": true,
+        "sun": true,
+        "x": 730,
+        "y": 400,
+        "wires": [
+            [
+                "25c8209c.0b938"
+            ]
+        ]
+    },
+    {
+        "id": "19d03e7d.118292",
+        "type": "schedex",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "passthroughunhandled": false,
+        "suspended": false,
+        "lat": "49.9014",
+        "lon": "8.2986",
+        "ontime": "20:15",
+        "ontopic": "home/outdoor/cistern/automatic",
+        "onpayload": "on",
+        "onoffset": 0,
+        "onrandomoffset": false,
+        "offtime": "20:20",
+        "offtopic": "home/outdoor/cistern/automatic",
+        "offpayload": "off",
+        "offoffset": 0,
+        "offrandomoffset": 0,
+        "mon": true,
+        "tue": true,
+        "wed": true,
+        "thu": true,
+        "fri": true,
+        "sat": true,
+        "sun": true,
+        "x": 730,
+        "y": 460,
+        "wires": [
+            [
+                "25c8209c.0b938"
+            ]
+        ]
+    },
+    {
+        "id": "8ceb7159.cab1f8",
+        "type": "stoptimer",
+        "z": "93677e9e.8e6ed8",
+        "duration": "500",
+        "units": "Second",
+        "payloadtype": "str",
+        "payloadval": "off",
+        "name": "max. 500 sec. off",
+        "x": 490,
+        "y": 300,
+        "wires": [
+            [],
+            [
+                "7c4211d8.0450e"
+            ]
+        ]
+    },
+    {
+        "id": "7c4211d8.0450e",
+        "type": "function",
+        "z": "93677e9e.8e6ed8",
+        "name": "check pump state",
+        "func": "cistern_pump_state = global.get(\"gv_cistern_pump_state\");\n\nif (msg.payload === \"off\" && cistern_pump_state == \"on\"){\n    msg.topic = \"timeout\"\n    msg.payload = \"off\";\n    return msg;\n    }",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 710,
+        "y": 300,
+        "wires": [
+            [
+                "25c8209c.0b938"
+            ]
+        ]
+    },
+    {
+        "id": "d122e2c7.4eeb9",
+        "type": "mqtt in",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "topic": "home/outdoor/cistern/automatic/morning",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "x": 460,
+        "y": 400,
+        "wires": [
+            [
+                "5f8d08de.25cd48"
+            ]
+        ]
+    },
+    {
+        "id": "e1fb0741.132488",
+        "type": "function",
+        "z": "93677e9e.8e6ed8",
+        "name": "msg.payload to telegram",
+        "func": "msg.payload = {\n    chatId : '-396221247', \n    type : 'message', \n    content : msg.payload,\n    options : {\n        disable_notification: true\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1399,
+        "y": 240,
+        "wires": [
+            [
+                "60e8b326.38ae9c",
+                "28009042.7f2fb"
+            ]
+        ]
+    },
+    {
+        "id": "a45b858f.6b4be8",
+        "type": "change",
+        "z": "93677e9e.8e6ed8",
+        "name": "Set global variable cistern_pump_state",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload",
+                "pt": "msg",
+                "to": "gv_cistern_pump_state",
+                "tot": "global"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1239,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8ed5501c.c766c",
+        "type": "mqtt in",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "topic": "home/outdoor/cistern/pump/trigger",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "x": 220,
+        "y": 340,
+        "wires": [
+            [
+                "8ceb7159.cab1f8",
+                "25c8209c.0b938"
+            ]
+        ]
+    },
+    {
+        "id": "629260db.a674a",
+        "type": "mqtt in",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "topic": "home/outdoor/cistern/automatic/evening",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "x": 450,
+        "y": 460,
+        "wires": [
+            [
+                "19d03e7d.118292"
+            ]
+        ]
+    },
+    {
+        "id": "8d77db9b.3c2778",
+        "type": "debug",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 1159,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "25c8209c.0b938",
+        "type": "function",
+        "z": "93677e9e.8e6ed8",
+        "name": "Consolidate",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 952,
+        "y": 340,
+        "wires": [
+            [
+                "8d77db9b.3c2778",
+                "a45b858f.6b4be8",
+                "7d4c011c.09fa5",
+                "2129ab38.d49aac"
+            ]
+        ]
+    },
+    {
+        "id": "74c1a279.3415ac",
+        "type": "mqtt in",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "topic": "home/outdoor/cistern/emergencystop",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "x": 850,
+        "y": 240,
+        "wires": [
+            [
+                "7d4c011c.09fa5"
+            ]
+        ]
+    },
+    {
+        "id": "68a2789e.8cb148",
+        "type": "mqtt in",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "topic": "home/outdoor/cistern/#",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "x": 180,
+        "y": 140,
+        "wires": [
+            [
+                "9761246f.587fc8",
+                "1868ceb1.b3a101"
+            ]
+        ]
+    },
+    {
+        "id": "9761246f.587fc8",
+        "type": "debug",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 390,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "d45df55.6a7bf08",
+        "type": "file",
+        "z": "93677e9e.8e6ed8",
+        "name": "",
+        "filename": "/var/log/nodered/mqtt_gardencontrol.log",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 660,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1868ceb1.b3a101",
+        "type": "function",
+        "z": "93677e9e.8e6ed8",
+        "name": "Create Logfile",
+        "func": "msg.timestamp = global.get(\"gv_now_timestamp\");\nmsg.payload = msg.timestamp+\" \"+msg.topic+\" \"+msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "d45df55.6a7bf08"
+            ]
+        ]
+    },
+    {
+        "id": "28009042.7f2fb",
+        "type": "debug",
+        "z": "93677e9e.8e6ed8",
+        "name": "Replace with your Telegram or E-Mail node",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 1719,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "89c47141.2fd35",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "mqtt.tld.de",
+        "broker": "mqtt.tld.de",
+        "port": "8883",
+        "tls": "dab1e87b.a61058",
+        "clientid": "",
+        "usetls": true,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "dab1e87b.a61058",
+        "type": "tls-config",
+        "z": "",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false
+    }
+]
